@@ -1,4 +1,4 @@
-package dev.solene;
+package solene;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
