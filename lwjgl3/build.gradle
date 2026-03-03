@@ -152,9 +152,54 @@ construo {
   }
 }
 
+def distDir = rootProject.file('dist')
+
+// Copies the fat JAR to the root dist/ folder.
+// End-users run it with: java -jar <filename>.jar  (requires Java 21)
+tasks.register('distJar') {
+  group = 'distribution'
+  description = 'Copies the runnable fat JAR to the root dist/ folder.'
+  dependsOn jar
+  doLast {
+    distDir.mkdirs()
+    copy {
+      from jar.archiveFile
+      into distDir
+    }
+    println "  Copied: ${jar.archiveFile.get().asFile.name} → dist/"
+  }
+}
+
+// Builds every platform bundle and the fat JAR, collecting all output in root dist/.
+// Copy logic lives here (not in doLast of packageXxx tasks) so it always runs even when
+// those tasks are UP-TO-DATE.
+tasks.register('package') {
+  group = 'distribution'
+  description = 'Packages all distribution artifacts (JAR + all platform bundles) into the root dist/ folder.'
+  dependsOn 'distJar', 'packageLinuxX64', 'packageMacM1', 'packageMacX64', 'packageWinX64'
+  doLast {
+    distDir.mkdirs()
+    copy {
+      from fileTree(layout.buildDirectory.dir('construo/dist')) { include '*.zip' }
+      into distDir
+    }
+    println "\n=== Distribution output (dist/) ==="
+    distDir.listFiles()?.sort()?.each { println "  ${it.name} (${it.length() / 1_000_000}MB)" }
+  }
+}
+
 // Equivalent to the jar task; here for compatibility with gdx-setup.
 tasks.register('dist') {
   dependsOn 'jar'
+}
+
+// Deletes the root dist/ folder.
+tasks.register('cleanDist') {
+  group = 'distribution'
+  description = 'Deletes the root dist/ folder.'
+  doLast {
+    delete distDir
+  }
 }
 
 distributions {

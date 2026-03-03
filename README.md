@@ -41,15 +41,35 @@ For example, `core:clean` removes `build` folder only from the `core` project.
 The project uses [Construo](https://github.com/fourlastor-jams/construo) to produce self-contained,
 platform-specific executables with a bundled JRE. No Java installation required by end-users.
 
-Run the appropriate task from the project root:
+All distribution artifacts are collected in the `dist/` folder at the repository root.
 
-- `lwjgl3:distLinuxX64` — Linux x86-64 (produces a `.tar.gz`)
-- `lwjgl3:distMacM1` — macOS Apple Silicon ARM64 (produces a `.tar.gz` containing a `.app`)
-- `lwjgl3:distMacX64` — macOS Intel x86-64 (produces a `.tar.gz` containing a `.app`)
-- `lwjgl3:distWinX64` — Windows x86-64 (produces a `.zip`)
+### Build everything at once
+
+    ./gradlew package
+
+Builds the fat JAR and all four platform bundles, placing everything in `dist/`.
+
+### Individual platform bundles (bundled JRE — no Java required on end-user machine)
+
+| Task | Platform | Output |
+|------|----------|--------|
+| `lwjgl3:packageLinuxX64` | Linux x86-64 | `.zip` |
+| `lwjgl3:packageMacM1` | macOS Apple Silicon (ARM64) | `.zip` containing a `.app` |
+| `lwjgl3:packageMacX64` | macOS Intel (x86-64) | `.zip` containing a `.app` |
+| `lwjgl3:packageWinX64` | Windows x86-64 | `.zip` |
 
 Example:
 
-    ./gradlew lwjgl3:distLinuxX64
+    ./gradlew lwjgl3:packageLinuxX64
 
-Output archives are placed in `lwjgl3/build/construo/`.
+### Fat JAR (requires Java 21 on end-user machine)
+
+    ./gradlew lwjgl3:distJar
+
+Produces a single runnable JAR in `dist/`. Useful for power users who already have Java installed.
+
+    java -jar dist/<filename>.jar
+
+### Clean distribution output
+
+    ./gradlew lwjgl3:cleanDist

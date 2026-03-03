@@ -67,3 +67,9 @@ subprojects {
 }
 
 eclipse.project.name = 'Solenne' + '-parent'
+
+tasks.register('package') {
+  group = 'distribution'
+  description = 'Packages all distribution artifacts into the root dist/ folder.'
+  dependsOn ':lwjgl3:package'
+}
