@@ -35,3 +35,21 @@ be replaced with the ID of a specific project.
 For example, `core:clean` removes `build` folder only from the `core` project.
 
 [Tutorial](https://libgdx.com/wiki/start/a-simple-game#the-game-life-cycle)
+
+## Distribution
+
+The project uses [Construo](https://github.com/fourlastor-jams/construo) to produce self-contained,
+platform-specific executables with a bundled JRE. No Java installation required by end-users.
+
+Run the appropriate task from the project root:
+
+- `lwjgl3:distLinuxX64` — Linux x86-64 (produces a `.tar.gz`)
+- `lwjgl3:distMacM1` — macOS Apple Silicon ARM64 (produces a `.tar.gz` containing a `.app`)
+- `lwjgl3:distMacX64` — macOS Intel x86-64 (produces a `.tar.gz` containing a `.app`)
+- `lwjgl3:distWinX64` — Windows x86-64 (produces a `.zip`)
+
+Example:
+
+    ./gradlew lwjgl3:distLinuxX64
+
+Output archives are placed in `lwjgl3/build/construo/`.
